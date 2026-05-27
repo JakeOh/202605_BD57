@@ -6,5 +6,5 @@
 ---
 
 * lab_sql
-  * [Oracle Database 21c Express Edition 다운로드](https://www.oracle.com/kr/database/technologies/xe-downloads.html)
-  * [SQL Developer 다운로드](https://www.oracle.com/kr/database/sqldeveloper/technologies/download/)
+  * [Oracle Database 21c Express Edition 다운로드](https://drive.google.com/file/d/1PrCNw13U_0ZxgkoMYI8VpAJNSEYR03gL/view?usp=sharing)
+  * [SQL Developer 다운로드](https://drive.google.com/file/d/1xmovPbqqjrxvlYg_NbMNs9aGPy7NDqUj/view?usp=sharing)
