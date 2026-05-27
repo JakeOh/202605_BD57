@@ -16,3 +16,11 @@
 select sysdate from dual;
 
 select systimestamp from dual;  -- 현재 날짜와 시간을 출력.
+
+-- SQL 문법에서 제공되는 키워드(예약어, 명령어)는 대/소문자를 구분하지 않음.
+-- SQL 문자의 끝은 세미콜론(;)으로 표시.
+select sysdate from dual;  -- 모두 소문자로.
+SELECT SYSDATE FROM DUAL;  -- 모두 대문자로.
+SELECT sysdate FROM dual;  -- 키워드는 대문자로. 컬럼이름 또는 테이블 이름은 소문자로.
+select SYSDATE from DUAL;  -- 키워드는 소문자로. 컬럼이름 또는 테이블 이름은 대문자로.
+Select Sysdate From Dual;  -- 대/소문자를 섞어서 사용 가능. 권장하지 않음.
