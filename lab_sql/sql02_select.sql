@@ -66,3 +66,39 @@ order by ename;  --> asc(오름차순)은 생략 가능.
 
 select ename from emp
 order by ename desc;
+
+-- 직원 테이블에서 부서 번호와 직원 이름을 검색.
+-- 정렬 순서: (1) 부서 번호 오름차순, (2) 직원 이름 오름차순.
+select deptno, ename from emp
+order by deptno, ename;
+
+-- 직원 테이블에서 부서번호, 직원 이름, 입사일을 검색.
+-- 정렬 순서: (1) 부서 번호 오름차순, (2) 입사일 오름차순.
+select deptno, ename, hiredate
+from emp
+order by deptno, hiredate;
+
+-- 직원 테이블에서 업무, 직원 이름, 급여를 검색.
+-- 정렬 순서: (1) 업무 오름차순, (2) 급여 내림차순.
+select job, ename, sal
+from emp
+order by job, sal desc;
+-- order by job asc, sal desc;
+
+-- 중복되는 데이터 제거하고 출력.
+-- (문법) select distinct 컬럼이름, ... from 테이블 [order by 컬럼, ...];
+
+-- 직원 테이블에서 부서 번호를 검색.
+select deptno from emp;  --> 결과 14개 행
+select distinct deptno from emp;  --> 결과 3개 행
+select distinct deptno from emp order by deptno;
+
+-- 중복되지 않는 부서 번호와 업무를 검색.
+select deptno, job from emp;  --> 14개 행
+select distinct deptno, job from emp;  --> 9개 행
+select distinct deptno, job
+from emp
+order by deptno, job;
+
+-- (주의) select distinct 구문에서 distinct는 한 번만 사용해야 함.
+-- select distinct deptno, distinct job from emp;  --> 에러 발생.
