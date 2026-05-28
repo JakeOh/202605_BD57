@@ -78,14 +78,59 @@ order by deptno, sal desc;
 select ename, job, sal
 from emp
 where job = 'CLERK';
---> 문자열은 작은따옴표('')를 사용함!
---> 컬럼에 저장된 문자열의 비교에서는 대/소문자를 구별!!
+--> SQL 식별자(예약어, 테이블 이름, 컬럼 이름 등)를 제외한 문자열은 작은따옴표('')를 사용함!
+--> 컬럼에 저장된 문자열의 비교에서는 대/소문자를 구분!!
 
 -- 업무가 'CLERK' 또는 'MANAGER'인 직원들의 이름, 업무, 급여를 출력.
 -- 정렬: (1) 업무, (2) 급여
+select ename, job, sal
+from emp
+where job = 'CLERK' or job = 'MANAGER'
+order by job, sal;
+
+select ename, job, sal
+from emp
+where job in ('CLERK', 'MANAGER')
+order by job, sal;
 
 -- 업무가 영업사원(SALESMAN), 관리자(MANAGER), 분석가(ANALYST)인 직원들의 모든 정보(컬럼).
+select * from emp
+where job = 'SALESMAN' or job = 'MANAGER' or job = 'ANALYST';
+
+select * from emp
+where job in ('SALESMAN', 'MANAGER', 'ANALYST');
 
 -- 20번 부서에서 근무하는 'CLERK'의 모든 레코드(모든 컬럼)를 출력.
+select * from emp
+where deptno = 20 and job = 'CLERK';
 
 -- CLERK, ANALYST, MANAGER가 아닌 직원들의 사번, 이름, 업무, 급여를 사번순 출력.
+select empno, ename, job, sal
+from emp
+where job != 'CLERK' and job != 'ANALYST' and job != 'MANAGER'
+order by empno;
+
+select empno, ename, job, sal
+from emp
+where job not in ('CLERK', 'ANALYST', 'MANAGER')
+order by empno;
+
+-- like 검색: 특정 문자열이 포함된 값들을 찾는 검색 방법.
+-- like 검색에서 사용하는 wildcard(특수문자)
+-- (1) %: 글자수 상관없이 어떤 문자열이어도 상관 없음.
+-- (2) _: 밑줄(underscore)이 있는 위치에 "한 글자"가 어떤 문자이더라도 상관 없음.
+
+select * from emp where job like 'C%';
+--> job(업무)가 'C'로 시작하는
+
+select * from emp where job like 'C_';
+--> job이 CA, CB, CC, CD, ... 등의 패턴인 경우
+
+select * from emp where job like '%R';
+--> job이 'R'로 끝나는
+
+-- job이 'A'를 포함하는
+select * from emp where job like '%A%';
+
+
+-- 날짜 타입의 크기 비교: 과거 < 현재 < 미래
