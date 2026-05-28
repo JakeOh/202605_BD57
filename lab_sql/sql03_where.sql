@@ -132,5 +132,31 @@ select * from emp where job like '%R';
 -- job이 'A'를 포함하는
 select * from emp where job like '%A%';
 
+-- 직원 이름이 A로 시작하는 직원들.
+select * from emp where ename like 'A%';
+
+-- 직원 이름에 A가 포함되는 직원들.
+select * from emp where ename like '%A%';
+
+-- % vs _
+select * from emp where ename like 'KING%';
+select * from emp where ename like 'KING_';
+
 
 -- 날짜 타입의 크기 비교: 과거 < 현재 < 미래
+-- 1982/01/01 이후에 입사한 직원들의 모든 정보.
+select * from emp where hiredate > '1982/01/01';
+--> 오라클에서 hiredate 컬럼 값(DATE 타입)들을 문자열로 변환한 후 '1982/01/01' 문자열과 크기 비교.
+
+select * from emp where hiredate > '82/01/01';
+--> 위 SQL 문장의 실행 결과는
+--  도구 > 환경설정 > 데이터베이스 > NLS > 날짜 형식 설정에 따라 다른 결과를 줌.
+--  날짜 형식이 'RR/MM/DD'로 설정된 경우에는 3개의 행이 검색됨.
+--  날짜 형식이 'YYYY/MM/DD'로 설정된 경우에는 14개의 행이 검색됨.
+
+-- 1981 ~ 1982년에 입사한 직원들.
+select * from emp
+where hiredate >= '1981/01/01' and hiredate <= '1982/12/31';
+
+select * from emp
+where hiredate between '1981/01/01' and '1982/12/31';
