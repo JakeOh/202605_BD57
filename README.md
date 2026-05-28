@@ -5,6 +5,9 @@
 
 ---
 
+* 강의 동영상
+  *  [YouTube Playlist](https://www.youtube.com/playlist?list=PLIYf0rAjO5maJE2AEQUJvFbTjgnCTQKrq)
+
 * lab_sql
   * [Oracle Database 21c Express Edition 다운로드](https://www.oracle.com/kr/database/technologies/xe-downloads.html)
   * [SQL Developer 다운로드](https://www.oracle.com/database/sqldeveloper/technologies/download/)
