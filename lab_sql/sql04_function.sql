@@ -129,3 +129,65 @@ select
 from emp
 where sal * 12 + nvl(comm, 0) between 10000 and 30000
 order by "ANNUAL_SAL" desc;
+
+
+-- round(컬럼/식, 숫자): 반올림
+select
+    10 / 3,
+    round(10 / 3, 1),  --> 소수점 둘째 자리에서 반올림해서 소수점 이하 한 자리까지만 표현.
+    round(10 / 3, 2),  --> 반올림해서 소수점 이하 둘째 자리까지 표현
+    round(10 / 3, 3)   --> 반올림해서 소수점 이하 셋째 자리까지 표현.
+from dual;
+
+select 
+    round(153, -1), --> 일의 자리에서 반올림.
+    round(153, -2)  --> 십의 자리에서 반올림. 
+from dual;
+
+-- trunc(컬럼/식, 숫자): 버림. 잘라냄.
+select trunc(3.141592, 3), round(3.141592, 3) from dual;
+
+
+-- decode(var, value, return1, return2):
+-- var의 값이 value와 같으면 return1을 반환, 그렇지 않으면 return2 반환.
+-- 10번 부서는 보너스를 50, 그 외의 부서들은 보너스를 100.
+select
+    ename, deptno,
+    decode(deptno, 10, 50, 100) as "BONUS"
+from emp;
+
+-- decode(var, value1, return1, value2, return2, return3):
+-- var의 값이 value1이면 return1을 반환,
+-- 그렇지 않고 var의 값이 value2이면 return2를 반환,
+-- 그렇지 않으면 return3을 반환.
+-- 10번 부서는 보너스를 50, 20번 부서는 보너스를 100, 그 이외의 부서들은 200.
+select
+    ename, deptno,
+    decode(deptno, 10, 50, 20, 100, 200) as "BONUS"
+from emp;
+
+-- decode 함수의 단점은 값이 같은 지만 비교할 수 있음. 크기 비교는 할 수 없음!
+-- 조건식이 많아질 수록 아규먼트 개수가 매우 많아짐. 문장만 보고 결과를 예측하기 힘듦.
+
+-- case-when 구문: decode() 함수를 대신할 수 있는 문법.
+select
+    ename, deptno,
+    case
+        when deptno = 10 then 50
+        when deptno = 20 then 100
+        else 200
+    end as "BONUS"
+from emp;
+
+-- case-when 구문을 사용해서
+-- 이름, 급여, 보너스(급여가 3000 이상이면 100, 2000 이상이면 150, 1000 이상이면 200, 그 이외에는 250)
+select 
+    ename, sal,
+    case
+        when sal >= 3000 then 100
+        when sal >= 2000 then 150
+        when sal >= 1000 then 200
+        else 250
+    end as "BONUS"
+from emp;
+    
