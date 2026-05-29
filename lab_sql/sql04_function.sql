@@ -92,3 +92,40 @@ select to_date('49-05-29', 'RR-MM-DD') from dual;  --> 2049-05-29
 -- 1981 ~ 1982 사이에 입사한 직원들의 레코드.
 select * from emp
 where hiredate between to_date('81/01/01', 'RR/MM/DD') and to_date('82/12/31', 'RR/MM/DD');
+
+
+-- nvl(var, value): var가 null이면 value를 반환하고, 그렇지 않으면 var를 그대로 반환.
+select comm, nvl(comm, -1) from emp;
+
+-- nvl2(var, value1, value2): var가 null이 아니면 value1을 반환, null이면 value2를 반환.
+select comm, nvl2(comm, 1, 0) from emp;
+
+-- 직원 이름, 급여(sal), 수당(comm), 연봉을 출력.
+-- 연봉 = 급여 * 12 + 수당
+select
+    ename, sal, comm, sal * 12 + comm  --> 연봉이 null이 되는 경우가 있음.
+from emp;
+
+select
+    ename, sal, comm, 
+    sal * 12 + nvl(comm, 0) as "연봉"
+from emp;
+
+-- 연봉이 30,000 이상인 직원들의 부서번호, 이름, 급여, 수당, 연봉을 출력.
+-- 연봉 내림차순 정렬.
+select
+    deptno, ename, sal, comm, 
+    sal * 12 + nvl(comm, 0) as "ANNUAL SALARY"
+from emp
+where sal * 12 + nvl(comm, 0) >= 30000
+order by "ANNUAL SALARY" desc;
+--> select 절에서 설정한 별명(alias)는 where 절에서 사용할 수 없음!
+--> order by 절에서는 사용할 수 있음.
+
+-- 연봉이 10,000 이상 30,000 이하인 직원들의 사번, 이름, 연봉을 연봉 내림차순으로 출력.
+select 
+    empno, ename,
+    sal * 12 + nvl(comm, 0) as "ANNUAL_SAL"
+from emp
+where sal * 12 + nvl(comm, 0) between 10000 and 30000
+order by "ANNUAL_SAL" desc;
