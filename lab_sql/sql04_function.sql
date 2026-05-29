@@ -225,4 +225,22 @@ from (
 ) t
 where t.RANKING <= 5;
 
+-- rank() 함수를 이용한 그룹 별(파티션 별) 순위 매기기
+-- 업무 별 급여 순위 출력(이름, 업무, 급여, 순위)
+select
+    ename, job, sal,
+    rank() over (partition by job order by sal desc) as "순위"
+from emp;
 
+-- 부서 별 급여 순위 출력(이름, 부서번호, 급여, 순위)
+select
+    ename, deptno, sal,
+    rank() over (partition by deptno order by sal desc) as "순위"
+from emp;
+
+-- 업무가 CLERK 또는 SALESMAN인 직원들 중에서, 업무별 급여 순위.
+select
+    ename, job, sal,
+    rank() over (partition by job order by sal desc) as "순위"
+from emp
+where job in ('CLERK', 'SALESMAN');
