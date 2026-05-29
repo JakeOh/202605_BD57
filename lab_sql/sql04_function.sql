@@ -190,4 +190,39 @@ select
         else 250
     end as "BONUS"
 from emp;
-    
+
+-- (주의) case-when 구문에서 when 조건절의 순서는 중요할 수 있음.
+select
+    ename, sal,
+    case
+        when sal >= 1000 then 200
+        when sal >= 2000 then 150
+        else 250
+    end as "BONUS"
+from emp;
+
+
+-- rank(), dense_rank(): 순위 매기기
+-- 급여가 높은 순서로(급여 내림차순) 이름과 급여를 출력.
+select
+    ename, sal
+from emp
+order by sal desc;
+
+select
+    ename, sal,
+    rank() over (order by sal desc) as "RANKING1",
+    dense_rank() over (order by sal desc) as "RANKING2" 
+from emp;
+
+-- 직원 테이블에서 급여가 높은 순서로 1 ~ 5위까지만 이름, 급여, 순위를 출력.
+select t.* 
+from (
+    select
+        ename, sal, 
+        rank() over (order by sal desc) as "RANKING"
+    from emp
+) t
+where t.RANKING <= 5;
+
+
