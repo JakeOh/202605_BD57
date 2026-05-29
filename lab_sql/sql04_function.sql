@@ -19,3 +19,44 @@ from emp;
 select
     empno, ename, to_char(hiredate, 'YYYY') as "입사연도"
 from emp;
+
+-- lower(문자열 컬럼): 소문자로 변환.
+-- upper(문자열 컬럼): 대문자로 변환.
+-- initcap(문자열 컬럼): 문자열에서 첫글자만 대문자로, 나머지는 소문자로 변환.
+select
+    lower('SMITH'), upper('smith'), initcap('smITH')
+from dual;
+
+select
+    ename, lower(ename), upper(ename), initcap(ename)
+from emp;
+
+-- 직원 이름 중에 대/소문자 구분 없이 'a'가 포함된 직원들의 레코드.
+select * from emp
+where lower(ename) like '%a%';
+
+select * from emp
+where upper(ename) like '%A%';
+
+-- replace(문자열 컬럼, 변환 전 문자, 변환 후 문자)
+-- 원본 문자열에 포함된 변환 전의 문자를 변환 후의 문자로 변환.
+select replace('smith', 'i', '*') from dual;
+select replace('allen', 'l', '*') from dual;
+
+select replace(ename, 'A', '-') from emp;
+
+-- substr(문자열 컬럼, 자르기 시작 인덱스, 자를 문자 개수)
+select substr('Hello, SQL!', 3, 6) from dual;
+
+-- 직원 이름의 첫 2글자만 출력.
+select substr(ename, 1, 2) from emp;
+
+-- substr(문자열 컬럼, 자르기 시작 인덱스): 시작 인덱스부터 문자열 끝까지 자름.
+select substr('Hello, SQL!', 10) from dual;
+
+-- length(문자열 컬럼): 문자열의 글자 개수를 반환.
+-- lengthb(문자열 컬럼): 문자열의 바이트(byte) 수를 반환.
+select length('hello'), lengthb('hello') from dual;
+select length('안녕하세요'), lengthb('안녕하세요') from dual;
+--> 영문자(a, b, A, B, ...), 숫자(0, 1, 2, ...), 특수기호(!, @, #, ...)들은 오라클에 저장될 때 1바이트가 사용됨.
+--> 한글 1글자는 3바이트가 사용됨.
