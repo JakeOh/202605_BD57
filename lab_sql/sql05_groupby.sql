@@ -117,3 +117,48 @@ order by deptno;
 --> having에서 사용할 수 없는 조건식 - 에러가 발생.
 */
 
+
+-- 업무별 급여 평균이 2000 이상인 그룹들의 업무, 급여 평균을 출력.
+select
+    job, round(avg(sal), 2)
+from emp
+group by job
+having avg(sal) >= 2000;
+
+-- 매니저 있는 직원들 중에서 업무별 급여 평균이 2000인 업무들을 출력.
+select 
+    job, round(avg(sal), 2)
+from emp
+where mgr is not null
+group by job
+having avg(sal) >= 2000;
+
+-- 매니저가 있는 직원들 중에서 
+-- 부서별 업무별 급여 평균이 1000 이상인 그룹들만
+-- 부서별 업무별 직원수, 급여 평균/최솟값/최댓값을 출력.
+select 
+    deptno, job,
+    count(*) as 직원수,
+    avg(sal) as 급여평균,
+    min(sal) as 급여최솟값,
+    max(sal) as 급여최댓값
+from emp
+group by deptno, job
+order by deptno, job;
+
+-- 입사연도별 직원수를 입사연도 오름차순으로 출력.
+select 
+    to_char(hiredate, 'YYYY') as 입사연도,
+    count(*) as 직원수
+from emp
+group by to_char(hiredate, 'YYYY')
+order by 입사연도;
+
+-- 입사연도별, 부서번호별 직원수 출력.
+select 
+    to_char(hiredate, 'YYYY') as 입사연도,
+    deptno as 부서번호,
+    count(*) as 직원수
+from emp
+group by to_char(hiredate, 'YYYY'), deptno
+order by 입사연도, 부서번호;
