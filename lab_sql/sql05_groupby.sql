@@ -143,7 +143,9 @@ select
     min(sal) as 급여최솟값,
     max(sal) as 급여최댓값
 from emp
+where mgr is not null
 group by deptno, job
+having avg(sal) >= 1000
 order by deptno, job;
 
 -- 입사연도별 직원수를 입사연도 오름차순으로 출력.
