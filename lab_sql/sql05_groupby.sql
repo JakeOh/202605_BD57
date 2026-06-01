@@ -58,3 +58,62 @@ from emp;
  * group by에서 사용한 그룹을 묶기 위한 컬럼들은 select할 수 있음.
  * group by에서 사용되지 않은 컬럼들은 select할 수 없음!!!
  */
+
+-- 부서 별 직원 수
+select deptno, count(*)
+from emp
+group by deptno
+order by deptno;
+
+-- 부서 별 급여 평균(소숫점 이하 2자리까지 반올림)
+select deptno, round(avg(sal), 2) as "부서 급여 평균"
+from emp
+group by deptno
+order by deptno;
+
+-- 업무가 PRESIDENT인 경우는 제외하고,
+-- 업무 별 직원 수, 급여 평균, 급여 최댓값, 급여 최솟값을 출력.
+select 
+    job, 
+    count(*) as 직원수, 
+    round(avg(sal), 2) as 급여평균, 
+    max(sal) as 최댓값, 
+    min(sal) as 최솟값
+from emp
+where job != 'PRESIDENT'
+group by job
+order by job;
+
+select 
+    job, 
+    count(*) as 직원수, 
+    round(avg(sal), 2) as 급여평균, 
+    max(sal) as 최댓값, 
+    min(sal) as 최솟값
+from emp
+group by job
+having job != 'PRESIDENT'
+order by job;
+
+-- 매니저가 있는(mgr이 null이 아닌) 직원들 중에서 부서 별 직원 수, 급여 평균을 출력.
+select 
+    deptno as 부서번호,
+    count(*) as 직원수,
+    round(avg(sal), 2) as 급여평균
+from emp
+where mgr is not null
+group by deptno
+order by deptno;
+
+/*
+select 
+    deptno as 부서번호,
+    count(*) as 직원수,
+    round(avg(sal), 2) as 급여평균
+from emp
+group by deptno
+having mgr is not null
+order by deptno;
+--> having에서 사용할 수 없는 조건식 - 에러가 발생.
+*/
+
