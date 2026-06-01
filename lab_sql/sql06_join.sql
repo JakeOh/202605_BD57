@@ -33,10 +33,65 @@ select * from dept;
 -- (1) ANSI 표준 문법
 select
     e.ename, e.deptno, d.dname
-from emp e inner join dept d on e.deptno = d.deptno;
+from emp e join dept d on e.deptno = d.deptno;
+--> inner join에서 inner는 생략 가능.
 
 -- (2) Oracle 문법
 select
     e.ename, e.deptno, d.dname
 from emp e, dept d
 where e.deptno = d.deptno;
+
+
+-- LEFT OUTER JOIN
+-- (1) 표준 문법
+select
+    e.ename, e.deptno, d.deptno, d.dname
+from emp e left join dept d on e.deptno = d.deptno;
+--> 결과: 15개 행(오쌤 포함, OPERATION 부서 미포함)
+--> left outer join에서 outer는 생략 가능.
+
+-- (2) Oracle 문법
+select
+    e.ename, e.deptno, d.deptno, d.dname
+from emp e, dept d
+where e.deptno = d.deptno(+);
+
+
+-- RIGHT OUTER JOIN
+-- (1) 표준 문법
+select
+    e.ename, e.deptno, d.deptno, d.dname
+from emp e right join dept d on e.deptno = d.deptno;
+--> 결과 15개 행(오쌤 미포함. 40 OPERATION 부서 포함)
+--> right outer join에서 outer는 생략 가능.
+
+-- (2) Oracle 문법
+select 
+    e.ename, e.deptno, d.deptno, d.dname
+from emp e, dept d
+where e.deptno(+) = d.deptno;
+
+
+-- FULL OUTER JOIN
+-- (1) 표준 문법
+select
+    e.ename, e.deptno, d.deptno, d.dname
+from emp e full join dept d on e.deptno = d.deptno;
+--> 결과 16개 행(50번 부서 오쌤, 40번 부서 OPERATION 모두 포함).
+--> full outer join에서 outer는 생략 가능.
+
+-- (2) Oracle 문법
+-- Oracle에서는 full outer join 문법을 제공하지 않음.
+-- Oracle에서는 left join과 right join의 결과를 "합집합(union)"으로 full outer join을 할 수 있음.
+select
+    e.ename, e.deptno, d.deptno, d.dname
+from emp e, dept d
+where e.deptno = d.deptno(+)
+union
+select
+    e.ename, e.deptno, d.deptno, d.dname
+from emp e, dept d
+where e.deptno(+) = d.deptno
+;
+
