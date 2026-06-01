@@ -95,3 +95,20 @@ from emp e, dept d
 where e.deptno(+) = d.deptno
 ;
 
+
+-- equi-join: join 조건식이 등호(=)로 작성된 경우.
+-- non-equi join: join 조건식이 부등호(>, >=, <, <=, ...)로 작성된 경우.
+-- emp와 salgrade 테이블에서 사번, 이름, 급여, 급여등급을 검색(inner join)
+-- (1) 표준 문법
+select
+    e.empno, e.ename, e.sal, s.grade
+from emp e
+    join salgrade s
+    on e.sal between s.losal and s.hisal;
+--    on e.sal >= s.losal and e.sal <= s.hisal;
+
+-- (2) Oracel 문법
+select
+    e.empno, e.ename, e.sal, s.grade
+from emp e, salgrade s
+where e.sal between s.losal and s.hisal;
