@@ -118,6 +118,56 @@ select * from emp
 where sal in (select sal from emp where job = 'SALESMAN');
 
 -- 매니저인 직원들?
+select * from emp
+where empno in (
+    select distinct mgr from emp
+);
 
 -- 매지저가 아닌 직원들?
+select * from emp
+where empno not in (
+    select distinct mgr from emp
+);
+--> 결과 행의 개수는 0개.
+
+-- empno in (a, b) 조건식은 empno = a or empno = b 조건식과 동일.
+-- empno not in (a, b) 조건식은 empno != a and empno != b 조건식와 동일.
+-- in과 not in은 값을 비교할 때 동등 비교 연산자(=, !=)를 사용. is로 비교하지 않음.
+-- empno = null 조건식은 항상 False. empno != null 조건식도 항상 False.
+select * from emp where mgr != null;  --> 0개 행.
+select * from emp where mgr is not null;  --> 13개 행.
+
+select * from emp
+where empno not in (
+    select distinct mgr from emp 
+    where mgr is not null
+);
+
+
+-- 다중 행 서브 쿼리와 where exists, where not exists 구문
+-- 매니저인 직원들?
+select e1.* from emp e1
+where exists (
+    select e2.* from emp e2 where e2.mgr = e1.empno
+);
+
+-- 매지저가 아닌 직원들?
+select e1.* from emp e1
+where not exists (
+    select e2.* from emp e2 where e2.mgr = e1.empno
+);
+
+-- 부서 테이블의 부서 정보(번호, 이름, 위치)를 출력. 단, 직원 테이블에 존재하는 부서들만.
+select d.* from dept d
+where exists (
+    select * from emp e where e.deptno = d.deptno
+)
+order by d.deptno;
+
+-- 부서 테이블의 부서 정보(번호, 이름, 위치)를 출력. 단, 직원 테이블에 존재하지 않는 부서들만.
+select d.* from dept d
+where not exists (
+    select * from emp e where e.deptno = d.deptno
+)
+order by d.deptno;
 
