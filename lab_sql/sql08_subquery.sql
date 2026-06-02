@@ -120,7 +120,7 @@ where sal in (select sal from emp where job = 'SALESMAN');
 -- 매니저인 직원들?
 select * from emp
 where empno in (
-    select distinct mgr from emp
+    select distinct mgr from emp 
 );
 
 -- 매지저가 아닌 직원들?
@@ -160,14 +160,62 @@ where not exists (
 -- 부서 테이블의 부서 정보(번호, 이름, 위치)를 출력. 단, 직원 테이블에 존재하는 부서들만.
 select d.* from dept d
 where exists (
-    select * from emp e where e.deptno = d.deptno
+    select e.* from emp e where e.deptno = d.deptno
 )
 order by d.deptno;
 
 -- 부서 테이블의 부서 정보(번호, 이름, 위치)를 출력. 단, 직원 테이블에 존재하지 않는 부서들만.
 select d.* from dept d
 where not exists (
-    select * from emp e where e.deptno = d.deptno
+    select e.* from emp e where e.deptno = d.deptno
 )
 order by d.deptno;
 
+
+-- 다중 행 서브 쿼리에서의 any vs all
+select * from emp
+where sal > any (
+    select sal from emp where job = 'SALESMAN'
+);
+--> sal > 1600 or sal > 1250 or sal > 1500와 같은 문장
+--> sal > 1250
+--> 영업사원 급여 최솟값(1250)보다 더 많은 급여를 받는 직원들.
+
+select * from emp
+where sal > all (
+    select sal from emp where job = 'SALESMAN'
+);
+--> sal > 1600 and sal > 1250 and sal > 1500
+--> sal > 1600
+--> 영업사원 급여 최댓값(1600)보다 더 많은 급여를 받는 직원들.
+
+
+-- having 절에서 사용되는 서브 쿼리
+-- 업무별 급여의 합계를 출력. 단, 영업사원들의 급여 합계보다 큰 업무들만 출력.
+select
+    job, sum(sal)
+from emp
+group by job
+having sum(sal) > (
+    select sum(sal) from emp where job = 'SALESMAN'
+);
+
+
+-- select 절에서 사용되는 서브 쿼리
+select empno, ename, 'ACCONUNTING' as DEPT_NAME
+from emp
+where deptno = 10;
+
+select
+    empno, ename,
+    (select dname from dept where deptno = 10) as DEPT_NAME
+from emp
+where deptno = 10;
+
+-- CLERK들의 사번, 이름, 급여, CLERK 급여의 최솟값, CLERK 급여의 최댓값을 출력.
+select
+    empno, ename, sal,
+    (select min(sal) from emp where job = 'CLERK') as MIN_SAL,
+    (select max(sal) from emp where job = 'CLERK') as MAX_SAL
+from emp
+where job = 'CLERK';
