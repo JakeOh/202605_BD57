@@ -146,3 +146,16 @@ offset 10 rows
 fetch next 5 rows only;
 --> offset n rows: select한 전체 결과에서 첫 n개의 행을 건너뛰고
 --> fetch next m rows only: 그 다음 m개의 행들만 출력.
+
+-- 입사일 최신 순으로 10명씩 출력. 입사일이 null인 경우는 가장 마지막에 출력되도록.
+select *
+from emp
+order by hiredate desc nulls last
+offset 0 rows
+fetch next 10 rows only;
+
+select *
+from emp
+order by hiredate desc nulls last
+offset 10 rows
+fetch next 10 rows only;
