@@ -90,3 +90,59 @@ select hiredate from emp order by hiredate desc;
 --> 내림차순 정렬에서는 null이 가장 먼저.
 select hiredate from emp order by hiredate desc nulls last;
 --> 내림차순 정렬에서도 null이 가장 마지막에 출력되도록.
+
+-- 페이징(paging) 처리: 한 페이지에 보여주는 검색 결과의 개수를 제한.
+-- (예) 직원 테이블에서 급여 오름차순으로 정렬했을 때 5개 행씩 출력(1 ~ 5, 6 ~ 10, ...)
+-- (1) rownum 사용 --> Oracle에서만 가능.
+-- (2) row_number() 윈도우 함수를 사용.
+-- (3) Top-N 쿼리 사용.
+
+-- rownum: Oracle에서 제공되는 가상(pseudo) 컬럼.
+select
+    e.*, rownum as "RN"
+from emp e
+order by sal;
+--> rownum: 급여로 정렬한 다음의 행번호가 아니라(!), 정렬 전의 emp 테이블에서의 행 번호.
+
+select
+    t.*, rownum as "RN"
+from (
+    select * from emp order by sal
+) t;
+--> rownum: 급여 오름차순 정렬된 상태에서의 행 번호.
+
+with t2 as (
+    select t.*, rownum as "RN"
+    from (select * from emp order by sal) t
+)
+select 
+    t2.*
+from t2
+where t2.RN between 11 and 15;
+
+
+-- row_number() 윈도우 함수
+select
+    e.*,
+    row_number() over (order by sal) as "RN"
+from emp e;
+
+with t as (
+    select
+        e.*,
+        row_number() over (order by sal) as "RN"
+    from emp e
+)
+select *
+from t
+where t.RN between 6 and 10;
+
+
+-- Top-N 쿼리
+select *
+from emp
+order by sal
+offset 10 rows
+fetch next 5 rows only;
+--> offset n rows: select한 전체 결과에서 첫 n개의 행을 건너뛰고
+--> fetch next m rows only: 그 다음 m개의 행들만 출력.
