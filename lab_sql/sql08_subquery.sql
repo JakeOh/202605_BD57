@@ -122,6 +122,7 @@ select * from emp
 where empno in (
     select distinct mgr from emp 
 );
+-- empno = null or empno = 7902 or empno = 7698 or ...
 
 -- 매지저가 아닌 직원들?
 select * from emp
@@ -129,6 +130,7 @@ where empno not in (
     select distinct mgr from emp
 );
 --> 결과 행의 개수는 0개.
+--> empno != null and empno != 7902 and empno != 7698 and empno != 7839 and ...
 
 -- empno in (a, b) 조건식은 empno = a or empno = b 조건식과 동일.
 -- empno not in (a, b) 조건식은 empno != a and empno != b 조건식와 동일.
@@ -142,6 +144,7 @@ where empno not in (
     select distinct mgr from emp 
     where mgr is not null
 );
+--> empno != 7902 and empno != 7698 and empno != 7839 and ...
 
 
 -- 다중 행 서브 쿼리와 where exists, where not exists 구문
@@ -149,6 +152,11 @@ where empno not in (
 select e1.* from emp e1
 where exists (
     select e2.* from emp e2 where e2.mgr = e1.empno
+);
+
+select e1.* from emp e1
+where exists (
+    select e2.* from emp e2 where e1.mgr = e2.empno
 );
 
 -- 매지저가 아닌 직원들?
