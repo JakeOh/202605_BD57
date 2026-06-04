@@ -153,11 +153,16 @@ select e1.* from emp e1
 where exists (
     select e2.* from emp e2 where e2.mgr = e1.empno
 );
+--> 메인 쿼리의 사원(e1)의 사번(empno)가 다른 사원(e2)의 관리자 사번(mgr)에 존재하면.
+--> 누군가의 상사(manager) 역할을 하는 직원 6명이 검색됨.
 
 select e1.* from emp e1
 where exists (
     select e2.* from emp e2 where e1.mgr = e2.empno
 );
+--> 메인 쿼리의 사원(e1)의 관리자 사번이 다른 사원(e2)의 사번(empno)에 존재하면.
+--> 나에게 업무를 지시하는 상사(manager)가 있는 지를 검색.
+--> 매니저가 있는 직원 13명이 검색됨.
 
 -- 매지저가 아닌 직원들?
 select e1.* from emp e1
@@ -178,6 +183,16 @@ where not exists (
     select e.* from emp e where e.deptno = d.deptno
 )
 order by d.deptno;
+
+
+-- 참고
+select d.* from dept d
+where exists (
+    select e.* from emp
+);
+--> 비상관 서브 쿼리(uncorrelated sub query):
+--> 메인 쿼리(dept)와 서브 쿼리(emp)가 아무런 연결 고리가 없음.
+--> 모든 부서에 대해서 where 절이 항상 참(true)가 되기 때문에 4개 부서가 모두 검색됨.
 
 
 -- 다중 행 서브 쿼리에서의 any vs all
