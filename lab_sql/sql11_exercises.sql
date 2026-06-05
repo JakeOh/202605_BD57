@@ -255,8 +255,55 @@ group by j.job_title
 ;
 
 -- 15. 국가 이름, 직무 이름, 국가별 직무별 급여 평균을 출력.
+select
+    c.country_name, j.job_title,
+    round(avg(e.salary), 1) as "급여 평균",
+    count(*) as "직원수"
+from employees e
+    join jobs j on e.job_id = j.job_id
+    join departments d on e.department_id = d.department_id
+    join locations l on d.location_id = l.location_id
+    join countries c on l.country_id = c.country_id
+group by c.country_name, j.job_title
+;
 
 -- 16. 국가 이름, 직무 이름, 국가별 직무별 급여 합계을 출력.
 --     미국에서, 국가별 직무별 급여 합계가 50,000 이상인 레코드만 출력.
+select
+    c.country_name, j.job_title,
+    sum(e.salary) as "급여 합계"
+from employees e
+    join jobs j on e.job_id = j.job_id
+    join departments d on e.department_id = d.department_id
+    join locations l on d.location_id = l.location_id
+    join countries c on l.country_id = c.country_id
+where c.country_id = 'US'
+group by c.country_name, j.job_title
+having sum(e.salary) >= 50000
+;
+
+-- (비교)
+select
+    c.country_name, j.job_title,
+    sum(e.salary) as "급여 합계"
+from employees e
+    join jobs j on e.job_id = j.job_id
+    join departments d on e.department_id = d.department_id
+    join locations l on d.location_id = l.location_id
+    join countries c on l.country_id = c.country_id
+group by c.country_name, j.job_title
+having c.country_name = 'United States of America'
+    and sum(e.salary) >= 50000
+;
 
 -- 17. 부서번호, 부서이름, 부서 매니저 사번, 부서 매니저 이름, 부서 매니저 직무, 부서 매니저 급여 출력
+select
+    d.department_id, d.department_name,
+    d.manager_id,
+    -- e.employee_id,
+    e.first_name || ' ' || e.last_name as "매니저 이름",
+    e.salary
+from departments d
+    join employees e on d.manager_id = e.employee_id
+    join jobs j on e.job_id = j.job_id
+order by d.department_id;
