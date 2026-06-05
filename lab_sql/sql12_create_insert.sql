@@ -55,9 +55,41 @@ create table ex_students (
 /*
  * 테이블에 행(row)을 삽입(저장):
  * insert into 테이블_이름 (컬럼1, 컬럼2, ...) values (값1, 값2, ...);
+ *
+ * 테이블에 삽입하는 값들의 개수가 컬럼 개수와 같고, 그 순서가 테이블의 컬럼 순서와 동일한 경우,
+ * insert into 테이블_이름 values (값1, 값2, ...);
  */
 insert into ex_students (student_id, student_name, birthday)
 values (1001, '홍길동', '2026/06/05');
+--> 오라클은 '2026/06/05' 문자열을 날짜 타입으로 변환해서 birthday 컬럼에 값을 삽입.
 
+insert into ex_students (birthday, student_id, student_name)
+values ('2000/06/05', 1002, '김길동');
 
+insert into ex_students (student_id, student_name)
+values (1003, '이길동');
 
+insert into ex_students
+values (1004, '오쌤', '2000/01/01');
+
+commit;  -- 테이블의 변경 내용을 데이터베이스에 영구히 저장.
+
+select * from ex_students;
+
+insert into ex_students (student_id)
+values (12345);
+--> 숫자 전체 자릿수(4)를 초과하는 값은 insert가 되지 않음.
+
+insert into ex_students (student_id)
+values ('abcd');
+--> 오라클은 'abcd' 문자열을 숫자 타입으로 변환하다가 에러를 발생 시킴.
+
+insert into ex_students (student_id)
+values ('1010');
+--> 오라클은 '1010' 문자열을 to_number() 함수를 사용해서 정수 1010으로 변환 후 삽입.
+
+insert into ex_students (student_name)
+values ('aaaaaaaaaaa');
+--> 최대 10글자(character)까지 저장할 수 있는 컬럼에 11글자를 삽입하려고 하기 때문에 에러.
+
+commit;
