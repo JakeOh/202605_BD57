@@ -117,14 +117,88 @@ group by d.department_name
 
 -- 8. 2008년에 입사한 직원들의 부서 이름과 부서별 인원수 출력. 
 --    단, 부서별 인원수가 5명 이상인 경우만 출력.
+select
+    d.department_name, count(*) as "직원수"
+from employees e
+    join departments d on e.department_id = d.department_id
+where hire_date between to_date('2008-01-01', 'YYYY-MM-DD')
+    and to_date('2008-12-31', 'YYYY-MM-DD')
+group by d.department_name
+having count(*) >= 5
+;
+
+-- (참고) 부서별 직원 수
+-- (1) inner join인 경우 -> 부서번호가 null인 직원이 포함되지 않음.
+select
+    d.department_name, count(*) as "직원수"
+from employees e
+    join departments d on e.department_id = d.department_id
+group by d.department_name;
+
+-- (2) left outer join인 경우 -> 부서번호가 null인 직원이 포함됨.
+select
+    d.department_name, count(*) as "직원수"
+from employees e
+    left join departments d on e.department_id = d.department_id
+group by d.department_name;
+
+-- (3) full outer join인 경우 -> 부서번호가 null인 직원, 모든 부서 이름이 포함.
+select
+    d.department_name, count(e.employee_id) as "직원수"
+from employees e
+    full join departments d on e.department_id = d.department_id
+group by d.department_name;
 
 -- 9. 부서번호, 부서별 급여 평균을 검색. 소숫점 한자리까지 반올림 출력.
+select
+    department_id, round(avg(salary), 1) as "AVG_SAL"
+from employees
+group by department_id
+order by "AVG_SAL";
 
 -- 10. 부서별 급여 평균이 최대인 부서의 부서번호, 급여 평균을 출력.
 -- (1) having 절과 서브쿼리 사용
+select
+    department_id, round(avg(salary), 1) as "급여 평균"
+from employees
+group by department_id
+having avg(salary) = (
+    select max(avg(salary)) from employees
+    group by department_id
+);
+
 -- (2) from 절에서의 서브쿼리 사용
+select
+    round(max(t."급여 평균"), 1)
+from (
+    select department_id, avg(salary) as "급여 평균"
+    from employees
+    group by department_id
+) t
+;
+
 -- (3) with 식별자 as (서브쿼리) 사용
+with t as (
+    select department_id, avg(salary) as "급여 평균"
+    from employees
+    group by department_id
+)
+select t.department_id, round(t."급여 평균", 1) as "급여 평균"
+from t
+where t."급여 평균" = (
+    select max(t."급여 평균") from t
+)
+;
+
 -- (4) offset-fetch 사용(내림차순 정렬 & Top-N 쿼리)
+select
+    department_id, round(avg(salary), 1) as "급여 평균"
+from employees
+group by department_id
+order by "급여 평균" desc
+offset 0 rows
+fetch next 1 rows only
+;
 
 -- 11. 사번, 직원 이름, 국가 이름, 급여 출력.
 
