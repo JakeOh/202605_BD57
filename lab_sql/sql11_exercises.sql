@@ -201,12 +201,58 @@ fetch next 1 rows only
 ;
 
 -- 11. 사번, 직원 이름, 국가 이름, 급여 출력.
+select
+    e.employee_id,
+    e.first_name || ' ' || e.last_name as "직원 이름",
+    c.country_name,
+    e.salary
+from employees e
+    join departments d on e.department_id = d.department_id
+    join locations l on d.location_id = l.location_id
+    join countries c on l.country_id = c.country_id
+;
+
+-- left join
+select
+    e.employee_id,
+    e.first_name || ' ' || e.last_name as "직원 이름",
+    c.country_name,
+    e.salary
+from employees e, departments d, locations l, countries c
+where e.department_id = d.department_id(+)
+    and d.location_id = l.location_id(+)
+    and l.country_id = c.country_id(+);
 
 -- 12. 국가이름, 국가별 급여 합계 출력.
+select
+    c.country_name, sum(e.salary) as "급여 평균"
+from employees e
+    join departments d on e.department_id = d.department_id
+    join locations l on d.location_id = l.location_id
+    join countries c on l.country_id = c.country_id
+group by c.country_name
+;
 
 -- 13. 사번, 직원이름, 직무 이름, 급여를 출력.
+select
+    e.employee_id,
+    e.first_name || ' ' || e.last_name as "직원 이름",
+    j.job_title,
+    e.salary
+from employees e
+    join jobs j on e.job_id = j.job_id
+order by e.employee_id;
 
 -- 14. 직무 이름, 직무별 급여 평균, 최솟값, 최댓값을 출력.
+select
+    j.job_title,
+    avg(e.salary) as "급여 평균",
+    min(e.salary) as "급여 최솟값",
+    max(e.salary) as "급여 최댓값"
+from employees e
+    join jobs j on e.job_id = j.job_id
+group by j.job_title
+;
 
 -- 15. 국가 이름, 직무 이름, 국가별 직무별 급여 평균을 출력.
 
