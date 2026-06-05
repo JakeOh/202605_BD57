@@ -36,12 +36,25 @@ select
 from employees e, departments d
 where e.department_id = d.department_id(+);
 
+-- (참고) right outer join
+select
+    e.first_name || ' ' || e.last_name as "직원 이름",
+    d.department_name
+from employees e, departments d
+where e.department_id(+) = d.department_id;
+
 -- 3. 직원의 이름과 직무 이름(job title)을 출력.
 select
     e.first_name || ' ' || e.last_name as "직원 이름",
     j.job_title
 from employees e
     join jobs j on e.job_id = j.job_id;
+
+select
+    e.first_name || ' ' || e.last_name as "직원 이름",
+    j.job_title
+from employees e, jobs j
+where e.job_id = j.job_id;
 
 -- 4. 직원의 이름과 직원이 근무하는 도시 이름(city)를 출력.
 select 
@@ -92,8 +105,15 @@ from employees
 where hire_date between to_date('2008-01-01', 'YYYY-MM-DD')
     and to_date('2008-12-31', 'YYYY-MM-DD');
 
--- 7. 2008년에 입사한 직원들의 부서 이름과 부서별 인원수 출력.
-
+-- 7. 2008년에 입사한 직원들의 부서 이름과 부서별 직원수 출력.
+select
+    d.department_name, count(*) as "직원수"
+from employees e
+    join departments d on e.department_id = d.department_id
+where hire_date between to_date('2008-01-01', 'YYYY-MM-DD')
+    and to_date('2008-12-31', 'YYYY-MM-DD')
+group by d.department_name
+;
 
 -- 8. 2008년에 입사한 직원들의 부서 이름과 부서별 인원수 출력. 
 --    단, 부서별 인원수가 5명 이상인 경우만 출력.
