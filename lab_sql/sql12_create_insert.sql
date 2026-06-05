@@ -1,0 +1,39 @@
+/*
+ * SQL 문장의 종류
+ * 1. DDL(Data Definition Language): create, alter, truncate, drop
+ * 2. DQL(Data Query Language): select
+ * 3. DML(Data Manipulation Language): insert, update, delete
+ * 4. TCL(Transaction Control Language): commit, rollback
+ *
+ * 테이블 생성 SQL
+ * create table 테이블_이름 (
+ *     컬럼_이름 데이터타입 [[기본값] [제약조건]],
+ *     ...
+ * );
+ *
+ * ANSI SQL 국제 표준에 데이터베이스 간의 호환성을 유지하기 위해서 데이터 타입 이름들을 정의하고 있음.
+ * 데이터 타입으로 사용되는 키워드(예약어)들은 데이터베이스 종류에 따라서 다름.
+ * ANSI SQL 표준 데이터 타입 이름
+ * 1. 숫자
+ *    (1) integer, int: 4바이트 정수.
+ *    (2) numeric(p, s): 전체 자릿수(p) 중에서 소숫점 이하 자릿수(s)인 실수.
+ * 2. 문자열
+ *    (1) char(n), character(n): 고정 길이(n 바이트) 문자열.
+ *    (2) varchar(n): varying character. 가변 길이(n 바이트) 문자열.
+ * 3. 날짜/시간
+ *    (1) date: 날짜
+ *    (2) time: 시간
+ *    (3) timestamp: 날짜와 시간을 포함한 세부적인 시간. 주로 100만분의 1초 단위까지 저장.
+ * Oracle에서 사용되는 데이터 타입 이름
+ * 1. 숫자: number(p, s) - 전체 자릿수(p) 중에서 소숫점 이하 자릿수(s)인 숫자.
+ * 2. 문자열:
+ *    (1) 고정 길이 문자열: char(n)
+ *    (2) 가변 길이 문자열: varchar2(n)
+ * 3. 날짜: 표준 이름과 동일.
+ */
+
+
+
+
+
+
