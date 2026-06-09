@@ -92,3 +92,38 @@ create table ex_tbl3 (
     constraint ck_ex_tbl3_salary check (salary >= 0)
 );
 
+
+-- Foreign Key(외래키): (다른/같은) 테이블의 PK를 참조하는 제약조건.
+-- 데이터를 삽입/변경할 때 PK에 없는 값은 삽입/변경되지 못하도록 하기 위해서.
+-- (1) PK를 갖는 테이블을 먼저 생성. 그 다음에 PK를 참조하는 FK를 갖는 테이블을 나중에 생성.
+--     (예) 부서 테이블(dept)를 먼저 생성. 직원 테이블(emp) 테이블을 나중에 생성.
+-- (2) PK 또는 FK 제약조건 설정 없이 테이블들을 먼저 생성. 그 다음에 제약조건들을 순서대로 추가(alter table).
+
+-- PK를 갖는 테이블 생성. 다른 테이블에서 참조하게 될 테이블을 생성.
+create table ex_dept3 (
+    id      number(2),
+    name    varchar2(10 char),
+    constraint pk_ex_dept3 primary key (id),
+    constraint nn_ex_dept3_name check (name is not null)
+);
+
+insert into ex_dept3 values (10, 'IT');
+insert into ex_dept3 values (20, 'HR');
+commit;
+
+-- 컬럼 선언할 때 제약조건도 함께 선언하는 방법.
+create table ex_emp2 (
+    id      number(4)
+            constraint pk_ex_emp2 primary key,
+    name    varchar2(10 char)
+            constraint nn_ex_emp2_name not null,
+    dept_id number(2)
+            constraint fk_ex_emp2_dept_id references ex_dept3 (id)
+);
+
+insert into ex_emp2 values (1000, '오쌤', 10);
+commit;
+
+insert into ex_emp2 values(2000, '홍길동', 50);
+--> 에러 발생: 부모 키가 없음(ex_dept3 테이블에 없는 부서 번호).
+
