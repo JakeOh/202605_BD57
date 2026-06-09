@@ -114,6 +114,8 @@ insert into ex_byte values ('홍12');
 
 
 -- create table 연습: emp 테이블과 같은 이름과 같은 타입의 컬럼들을 갖는 테이블(ex_emp)
+drop table ex_emp;  -- 테이블 삭제.
+
 create table ex_emp (
     empno       number(4, 0),  /* 4자리 정수 */
     ename       varchar2(10 byte),  /* 최대 10 바이트까지 저장할 수 있는 문자열 */
@@ -124,3 +126,21 @@ create table ex_emp (
     comm        number(7, 2),
     deptno      number(2)
 );
+
+-- rollback: 마지막에 commit된 이후에 테이블에서 변경된 내용(insert, update, delete)들을 
+-- 이전 commit 상태로 되돌림. create table로 생성된 테이블을 삭제하지는 않음.
+-- commit: 마지막에 commit된 이후에 테이블에서 변경된 내용(insert, update, delete)들을 영구히 저장.
+
+
+-- create table 테이블_이름 as select 구문: 테이블을 생성하면서 select한 내용들을 복사.
+-- dept 테이블의 구조(컬럼/데이터 타입)와 내용(행)을 ex_dept1 테이블로 복사.
+create table ex_dept1
+as select * from dept;
+
+-- dept 테이블의 구조(컬럼/데이터 타입)만 복사, 데이터는 복사하지 않기.
+create table ex_dept2
+as select * from dept where deptno = -1;
+
+-- ex_emp_dept: emp 테이블과 dept 테이블을 사용해서
+-- 사번, 이름, 업무, 입사일, 급여, 부서번호, 부서이름, 위치 컬럼을 갖는 테이블을 생성.
+
