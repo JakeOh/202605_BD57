@@ -127,3 +127,63 @@ commit;
 insert into ex_emp2 values(2000, '홍길동', 50);
 --> 에러 발생: 부모 키가 없음(ex_dept3 테이블에 없는 부서 번호).
 
+-- 컬럼 선언 따로, 제약조건 선언 따로 하는 방법.
+create table ex_emp3 (
+    id      number(4),
+    name    varchar2(10 char),
+    dept_id number(2),
+    constraint pk_ex_emp3 primary key (id),
+    constraint nn_ex_emp3_name check (name is not null),
+    constraint fk_ex_emp3_dept_id foreign key (dept_id) references ex_dept3 (id)
+);
+
+
+-- 기본값을 갖는 컬럼 선언
+create table ex_contents (
+    id              number(6)
+                    constraint pk_ex_contents primary key,
+    contents        varchar2(1000 char)
+                    constraint nn_ex_contents not null,
+    view_cnt        number(10)
+                    default 0  /* 기본값 설정 */
+                    constraint ck_view_cnt check (view_cnt >= 0),
+    created_time    timestamp
+                    default systimestamp  /* 기본값은 현재 시간 */
+);
+
+insert into ex_contents (id, contents) values (1, '안녕하세요!');
+commit;
+
+select * from ex_contents;
+--> insert할 때 view_cnt와 created_time에 값을 주지 않았을 때, default에서 선언된 값이 자동으로 삽입됨.
+
+insert into ex_contents values (2, 'Hello, SQL!', 100, '2026/01/01 15:30:20');
+commit;
+
+select * from ex_contents;
+--> insert할 때 view_cnt와 created_time 값을 주면, 기본값은 무시됨.
+
+
+/*
+ * 연습문제 1.
+ * 테이블 이름: customers(고객)
+ * 컬럼:
+ * (1) cust_id: 고객 아이디. 8 ~ 20 byte의 문자열. primary key.
+ * (2) cust_pw: 고객 비밀번호. 8 ~ 20 byte의 문자열. not null.
+ * (3) cust_email: 고객 이메일. 100 byte 가변 길이 문자열.
+ * (4) cust_gender: 고객 성별. 1자리 정수. 기본값 0. (0, 1, 2) 중 1개 값만 가능.
+ * (5) cust_age: 고객 나이. 3자리 정수. 기본값 0. 0 이상 200 이하의 정수만 가능.
+ */
+ 
+ 
+/*
+ * 연습문제 2.
+ * 테이블 이름: orders(주문)
+ * 컬럼:
+ * (1) order_id: 주문번호. 10자리 정수. primary key.
+ * (2) order_date: 주문 날짜. 기본값은 현재 시간.
+ * (3) order_method: 주문 방법. 최대 8 byte 문자열. ('online', 'offline') 중 1개 값만 가능.
+ * (4) cust_id: 주문 고객 아이디. 최대 20 byte 문자열. not null. customers(cust_id)를 참조.
+ */
+ 
+ 
