@@ -170,12 +170,29 @@ select * from ex_contents;
  * 컬럼:
  * (1) cust_id: 고객 아이디. 8 ~ 20 char의 문자열. primary key.
  * (2) cust_pw: 고객 비밀번호. 8 ~ 20 char의 문자열. not null.
- * (3) cust_email: 고객 이메일. 100 byte 가변 길이 문자열.
+ * (3) cust_email: 고객 이메일. 100 byte 가변 길이 문자열. unique.
  * (4) cust_gender: 고객 성별. 1자리 정수. 기본값 0. (0, 1, 2) 중 1개 값만 가능.
  * (5) cust_age: 고객 나이. 3자리 정수. 기본값 0. 0 이상 200 이하의 정수만 가능.
  */
- 
- 
+drop table customers;
+
+create table customers (
+    cust_id     varchar2(20 char)
+                constraint pk_customers primary key
+                constraint ck_cust_id check (length(cust_id) >= 8),
+    cust_pw     varchar2(20 char)
+                constraint nn_cust_pw  not null
+                constraint ck_cust_pw check (length(cust_pw) >= 8),
+    cust_email  varchar2(100 byte)
+                constraint uq_cust_email unique,
+    cust_gender number(1)
+                default 0
+                constraint ck_cust_gender check (cust_gender in (0, 1, 2)),
+    cust_age    number(3)
+                default 0
+                constraint ck_cust_age check (cust_age between 0 and 200)
+);
+
 /*
  * 연습문제 2.
  * 테이블 이름: orders(주문)
@@ -185,5 +202,15 @@ select * from ex_contents;
  * (3) order_method: 주문 방법. 최대 8 byte 문자열. ('online', 'offline') 중 1개 값만 가능.
  * (4) cust_id: 주문 고객 아이디. 최대 20 char 문자열. not null. customers(cust_id)를 참조.
  */
- 
- 
+drop table orders;
+
+create table orders (
+    order_id        number(10),
+    order_date      date default sysdate,  /* timestamp default systimestamp */
+    order_method    varchar2(8 byte),
+    cust_id         varchar2(20 char),
+    constraint pk_orders primary key (order_id),
+    constraint ck_order_method check (order_method in ('online', 'offline')),
+    constraint nn_orders_cust_id check (cust_id is not null),
+    constraint fk_orders_cust_id foreign key (cust_id) references customers (cust_id)
+);
