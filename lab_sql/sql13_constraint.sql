@@ -41,3 +41,54 @@ select * from ex_tbl1;
 -- 다시 한 번 실행하면 primary key 제약조건 위배로 에러가 발생.
 -- PK로 설정된 컬럼에는 중복된 값이 insert될 수 없기 때문.
 
+insert into ex_tbl1 (id, name) values (1002, '홍길동');  --> 성공
+
+insert into ex_tbl1 (name, email) values ('홍길동', 'gildong@gmail.com');
+--> 에러 발생: PK 컬럼은 null이 될 수 없기 때문에.
+
+insert into ex_tbl1 (id) values (1003);
+--> 에러 발생: name 컬럼(not null 제약조건)은 null이 될 수 없기 때문에.
+
+insert into ex_tbl1 (id, name, email) values (2001, '홍길동', 'hgd@itwill.co.kr');
+--> 에러 발생: email 컬럼(unique 제약조건)은 중복된 값이 삽입될 수 없기 때문에.
+
+insert into ex_tbl1 (id, name, email) values (2001, '홍길동', 'gildong@gmail.com');
+
+insert into ex_tbl1 (id, name, salary) values (3001, '김길동', -100);
+--> 에러 발생: salary >= 0 체크 제약조건을 위배.
+
+
+-- 테이블 생성할 때 제약조건 만들기 2: 제약조건 이름 설정.
+-- (1) 컬럼을 선언할 때 제약조건 이름을 설정.
+-- 컬럼_이름 데이터타입 constraint 제약조건_이름 제약조건
+create table ex_tbl2 (
+    id      number(4, 0) 
+            constraint pk_ex_tbl2 primary key,
+    name    varchar2(10 char)
+            constraint nn_ex_tbl2_name not null,
+    email   varchar2(100 char)
+            constraint uq_ex_tbl2_email unique,
+    salary  number(10, 2)
+            constraint ck_ex_tbl2_salary check (salary >= 0),
+    memo    varchar2(1000 char)
+);
+
+
+-- (2) 컬럼 선언 따로, 제약조건 선언을 따로 하는 방법.
+-- constraint [제약조건_이름] 제약조건 (컬럼)
+-- not null 제약조건인 경우에는 check 제약조건으로 선언해야 함!
+create table ex_tbl3 (
+    /* 컬럼 선언부 */
+    id      number(4),
+    name    varchar2(10 char),
+    email   varchar2(100 char),
+    salary  number(10, 2),
+    memo    varchar2(1000 char),
+    
+    /* 제약조건 선언부 */
+    constraint pk_ex_tbl3 primary key (id),
+    constraint nn_ex_tbl3_name check (name is not null),  /* 주의!! */
+    constraint uq_ex_tbl3_email unique (email),
+    constraint ck_ex_tbl3_salary check (salary >= 0)
+);
+
