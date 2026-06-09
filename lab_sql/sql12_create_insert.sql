@@ -69,6 +69,9 @@ values ('2000/06/05', 1002, '김길동');
 insert into ex_students (student_id, student_name)
 values (1003, '이길동');
 
+insert into ex_students values (2000, '홍길동');
+--> not enough values 에러
+
 insert into ex_students
 values (1004, '오쌤', '2000/01/01');
 
@@ -93,3 +96,31 @@ values ('aaaaaaaaaaa');
 --> 최대 10글자(character)까지 저장할 수 있는 컬럼에 11글자를 삽입하려고 하기 때문에 에러.
 
 commit;
+
+-- 오라클에서 문자열 타입 컬럼을 선언할 때 char(n byte)/char(n char) 또는 varchar2(n byte)/varchar2(n char).
+-- byte/char 단위를 생략하면 기본값은 byte 단위.
+-- 오라클에서 문자를 저장할 때 UTF-8 인코딩을 사용하는 경우,
+-- 영문자, 숫자, 특수기호 -> 한 글자를 저장할 때 1 byte를 사용.
+-- 한글, 일본어, 중국어, ... -> 한 글자를 저장할 때 3 byte를 사용.
+
+create table ex_byte (
+    col_str varchar2(5)  /* varchar2(5 byte)과 동일. */
+);
+
+insert into ex_byte values ('abc12');
+insert into ex_byte values ('abc123');  --> 에러(6 byte)
+insert into ex_byte values ('길동');  --> 에러(6 byte)
+insert into ex_byte values ('홍12');
+
+
+-- create table 연습: emp 테이블과 같은 이름과 같은 타입의 컬럼들을 갖는 테이블(ex_emp)
+create table ex_emp (
+    empno       number(4, 0),  /* 4자리 정수 */
+    ename       varchar2(10 byte),  /* 최대 10 바이트까지 저장할 수 있는 문자열 */
+    job         varchar2(9),  /* varchar2(9 byte)과 동일한 선언 */
+    mgr         number(4),  /* number(4, 0)과 동일한 선언 */
+    hiredate    date,
+    sal         number(7, 2),  /* 전체 7자리 중 소숫점 이하는 2자리 */
+    comm        number(7, 2),
+    deptno      number(2)
+);
