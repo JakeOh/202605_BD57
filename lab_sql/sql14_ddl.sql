@@ -135,4 +135,39 @@ purge table students;
 -- 휴지통 비우기.
 purge recyclebin;
 
+-- ex_emp_dept 테이블을 완전 삭제
+drop table ex_emp_dept purge;
 
+-- PK와 FK 관계로 연결을 맺고 있는 2개의 테이블이 있을 때, 테이블 삭제 순서가 중요.
+-- (1) FK를 갖고 있는 테이블(자식 테이블)을 먼저 삭제. PK를 갖는 테이블(부모 테이블)을 나중에 삭제.
+-- (2) FK 제약조건을 삭제 후 테이블들을 삭제.
+-- (3) drop table ... cascade constraints; 구문을 사용하면 연관된 FK 제약조건이 함께 삭제됨.
+
+-- (1) 
+-- ex_emp3 (FK) ---> ex_dept3 (PK) 관계의 테이블들에서 ex_dept3을 먼저 삭제하려고 하면 에러가 발생.
+-- ex_emp2 (FK) ---> ex_dept3 (PK) 관계의 테이블들에서 ex_dept3을 먼저 삭제하려고 하면 에러가 발생.
+-- ex_emp2과 ex_emp3을 먼저 삭제, 그 후에 ex_dept3을 삭제.
+drop table ex_emp3;
+drop table ex_emp2;
+drop table ex_dept3;
+
+-- (2) 
+-- orders (FK) ---> customers (PK) 관계에 테이블에서 customers를 먼저 삭제하려고 하면 에러가 발생.
+-- orders 테이블의 FK 제약조건을 삭제
+alter table orders drop constraint fk_orders_cust_id;
+-- orders와 customers의 관계가 끊어졌기 때문에, customers 테이블을 삭제하는 것이 가능.
+drop table customers;
+
+
+-- (3)
+create table ex_parent (
+    id number(1) primary key
+);
+
+create table ex_child (
+    child_id number(1) primary key,
+    parent_id number(1) references ex_parent (id)
+);
+
+drop table ex_parent cascade constraints;
+--> cascade constraints 구문을 사용하면 (1) FK 제약조건이 삭제되고, (2) 테이블 삭제를 수행.
