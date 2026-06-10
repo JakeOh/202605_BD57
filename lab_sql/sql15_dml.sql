@@ -50,10 +50,21 @@ where job is null;
 --     column = value: value를 column에 저장(할당).
 
 -- Ex 1. 사번이 7369인 직원의 급여를 1000, 수당을 100으로 업데이트.
+update emp
+set sal = 1000, comm = 100
+where empno = 7369;
+--> 사번이 PK인 경우라면, 오직 1개의 행만 업데이트됨.
+
 -- Ex 2. 업무가 'CLERK'인 직원들의 급여를 10% 인상.
+update emp
+set sal = sal * 1.1
+where job = 'CLERK';
+
 -- Ex 3. ACCOUNTING 부서에서 일하는 직원들의 급여를 10% 인상.
 -- Ex 4. 급여 등급이 1인 직원들의 급여를 20% 인상.
 -- Ex 5. emp 테이블에서 부서번호가 dept 테이블에 없는 직원의 부서번호를 null로 업데이트.
+
+commit;
 
 select * from emp;
 
