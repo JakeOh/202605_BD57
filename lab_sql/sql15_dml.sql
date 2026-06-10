@@ -44,10 +44,16 @@ set job = 'CLERK'
 where job is null;
 
 -- SQL에서 = 연산자의 의미:
--- (1) 비교 연산자: WHERE/HAVING 조건식에서 사용된 = 연산자
+-- (1) 비교 연산자: WHERE/HAVING 조건식에서 사용된 = 연산자.
 --     column = value: column의 값이 value와 같으면 true, 그렇지 않으면 false.
 -- (2) 할당 연산자: SET 절에서 사용된 = 연산자. 
 --     column = value: value를 column에 저장(할당).
+
+-- 사번이 7369인 직원의 급여를 1000, 수당을 100으로 업데이트.
+-- 업무가 'CLERK'인 직원들의 급여를 10% 인상.
+-- ACCOUNTING 부서에서 일하는 직원들의 급여를 10% 인상.
+-- 급여 등급이 1인 직원들의 급여를 20% 인상.
+-- emp 테이블에서 부서번호가 dept 테이블에 없는 직원의 부서번호를 null로 업데이트.
 
 select * from emp;
 
