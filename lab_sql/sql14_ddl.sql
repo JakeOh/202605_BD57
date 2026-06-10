@@ -52,3 +52,35 @@ delete from students where student_name is null;
 commit;
 
 -- 이제 위 45 행의 문장을 실행하면 alter table 명령은 성공.
+
+
+-- 3. 삭제(drop): 컬럼 삭제, 제약조건 삭제.
+-- (1) 컬럼 삭제: ALTER TABLE table_name DROP COLUMN 삭제할_컬럼_이름;
+-- students 테이블에서 student_birthday 컬럼을 삭제.
+alter table students drop column student_birthday;
+
+-- (2) 제약조건 삭제: ALTER TABLE table_name DROP CONSTRAINT 삭제할_제약조건_이름;
+-- students 테이블에서 nn_students_name 제약조건을 삭제.
+alter table students drop constraint nn_students_name;
+
+-- (참고) 메타 테이블(meta table): 테이블을 관리하기 위해서 데이터베이스가 생성하고 유지하는 테이블.
+-- 오라클 메타 테이블의 예: user_tables, user_constraints, ...
+-- 오라클은 메타 테이블에 테이블/컬럼/제약조건 이름을 저장할 때 일반적으로 "대문자"로 저장.
+select * from user_tables;
+
+-- scott 계정에서 생성한 테이블 이름들만 검색
+select table_name from user_tables;
+
+-- scott 계정의 테이블들 중에서 'ex_'로 시작하는 테이블 이름들만 검색.
+select table_name from user_tables where table_name like 'EX_%';
+--> (주의) like 'ex_%' 검색 조건을 사용하면 조건을 만족하는 행이 하나도 없음.
+
+select * from user_constraints;
+select constraint_name, constraint_type, table_name, search_condition
+from user_constraints;
+
+-- ex_tbl1 테이블에서 constraint_name, constraint_type, table_name, search_condition을 검색.
+select constraint_name, constraint_type, table_name, search_condition
+from user_constraints
+where table_name = 'EX_TBL1';
+--> 제약조건 타입: P(primary key), U(unique), C(check, not null)
