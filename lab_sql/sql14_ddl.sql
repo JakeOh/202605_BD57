@@ -83,4 +83,56 @@ from user_constraints;
 select constraint_name, constraint_type, table_name, search_condition
 from user_constraints
 where table_name = 'EX_TBL1';
---> 제약조건 타입: P(primary key), U(unique), C(check, not null)
+--> 제약조건 타입: P(primary key), U(unique), C(check, not null), R(relation, foreign key)
+
+-- 이름이 'SYS_'로 시작하는 제약조건들의 이름, 타입, 테이블 이름, 조건을 검색.
+select constraint_name, constraint_type, table_name, search_condition
+from user_constraints
+where constraint_name like 'SYS_%';
+
+
+-- 수정(modify): 기존에 만들어진 컬럼의 정의(데이터 타입, 기본값, null 여부) 수정.
+-- ALTER TABLE table_name MODIFY 컬럼 선언 문법;
+-- students 테이블에서 student_grade 컬럼(number(1, 0) default 1)을 
+-- number(2, 0) not null로 변경.
+alter table students modify student_grade number(2) not null;
+
+-- students 테이블에서 student_name 컬럼에 가변길이 최대 20글자까지 저장할 수 있도록 수정.
+alter table students modify student_name varchar2(20 char);
+
+-- 기존에 설정되어 있던 기본값(default) 삭제.
+-- 오라클인 경우, students 테이블에서 student_grade 컬럼의 기본값 설정을 삭제
+alter table students modify student_grade default null;  --> defualt 값을 null로 설정
+alter table students drop constraint SYS_C008402;  --> NN 제약조건 삭제
+
+insert into students (student_id, student_name) values (3000, '오쌤2');
+commit;
+select * from students;
+
+
+-- trauncate table 테이블_이름;
+-- 테이블의 모든 행을 삭제. DDL. rollback되지 않음!
+truncate table students;
+rollback;  --> rollback을 수행해도 잘려진 행들이 복원되지 않음!
+
+
+-- drop table 테이블_이름;
+-- 오라클 버전 10g부터는 휴지통 기능이 추가. drop table은 테이블을 휴지통으로 삭제.
+drop table students;
+--> 테이블과 테이블에 설정된 제약조건들이 함께 삭제됨.
+
+-- 휴지통으로 삭제된 테이블을 복구하는 방법.
+flashback table students to before drop;
+
+-- students 테이블을 휴지통으로 삭제
+drop table students;
+
+-- 휴지통에 있는 students 테이블을 완전 삭제
+purge table students;
+--> 휴지통(recyclebin)에서 students 테이블과 테이블에 설정된 제약조건들이 완전 삭제.
+--> flashback 불가능.
+
+-- 휴지통 비우기.
+purge recyclebin;
+
+
