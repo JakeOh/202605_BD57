@@ -30,3 +30,61 @@ select e.empno, e.ename, e.job, e.sal, e.deptno, d.dname
 from emp e, dept d
 where e.deptno = d.deptno
 order by e.empno;
+
+
+-- view: 테이블을 바라보는 객체.
+-- 실제 테이블의 내용이 변경되면, 뷰의 내용도 바뀜.
+-- emp 테이블에서 사번이 7369인 직원의 업무를 '경리'로 업데이트.
+update emp
+set job = '경리'
+where empno = 7369;
+
+commit;
+
+select * from v_emp_dept;
+--> emp 테이블에서 업데이트한 내용이 뷰에서도 보임.
+
+-- 뷰에서 변경된 내용은 실제 테이블에도 반영이 됨.
+-- v_emp_dept 뷰에서 사번이 7369인 직원의 급여를 9999로 업데이트.
+update v_emp_dept
+set sal = 9999
+where empno = 7369;
+--> 업데이트 성공
+
+select * from emp;
+--> 뷰에서 업데이트가 성공하면 뷰가 바라보는 실제 테이블의 데이터가 업데이트됨.
+
+-- v_emp_dept 뷰에서 사번이 7369인 직원의 부서이름을 '리서치'로 업데이트.
+update v_emp_dept
+set dname = '리서치'
+where empno = 7369;
+--> 1개 행 업데이트됨.
+
+select * from v_emp_dept;
+--> 뷰를 검색하면 모든 부서 이름 'RESEARCH'가  전부 '리서치'로 변경됨.
+-- empno=7369인 레코드의 부서번호(deptno)와 일치하는 부서의 부서이름을 dept 테이블에서 업데이트.
+
+select * from dept;
+
+
+-- 부서번호, 부서별 평균 급여를 갖는 뷰를 생성
+create or replace view v_avg_sal
+as
+select deptno, round(avg(sal), 2) as "AVG_SAL"
+from emp
+group by deptno
+order by deptno;
+
+select * from v_avg_sal;
+
+-- emp 테이블에서 사번이 7839인 직원의 급여를 9999로 업데이트.
+update emp
+set sal = 9999
+where empno = 7839;
+--> v_avg_sal 뷰에서도 업데이트된 평균 급여를 보게 됨.
+
+-- v_avg_sal 뷰에서 avg_sal 컬럼 값을 5000으로 업데이트?
+update v_avg_sal
+set AVG_SAL = 5000
+where deptno = 10;
+--> v_avg_sal은 업데이트할 수 없는 뷰.
