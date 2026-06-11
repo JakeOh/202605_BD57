@@ -116,3 +116,47 @@ where comm is null;
 commit;
 
 select * from emp;
+
+
+-- delete 문장: 테이블에서 (조건을 만족하는) 행(들)을 삭제하는 DML.
+-- (문법) delete from 테이블_이름 [where 조건식];
+-- where 조건절은 생략 가능. 조건절이 없으면 테이블의 모든 행들이 삭제됨.
+
+delete from emp; --> 테이블의 모든 행(15개)들이 삭제됨.
+
+rollback;  --> 이전(가장 마지막) commit 상태로 되돌림.
+
+-- 사번이 1004인 직원 정보를 테이블에서 삭제.
+delete from emp where empno = 1004;
+
+commit;
+
+-- 급여 등급이 5인 직원들의 정보를 테이블에서 삭제.
+-- 급여 등급이 5인 직원들
+select * from emp
+where sal between (select losal from salgrade where grade = 5)
+    and (select hisal from salgrade where grade = 5);
+
+select e.*, s.*
+from emp e
+    join salgrade s on e.sal between s.losal and s.hisal
+where grade = 5;
+
+-- 급여 5등급 직원 삭제
+delete from emp
+where sal between (select losal from salgrade where grade = 5)
+    and (select hisal from salgrade where grade = 5);
+
+rollback;
+
+delete from emp
+where empno in (
+    select e.empno
+    from emp e
+        join salgrade s on e.sal between s.losal and s.hisal
+    where grade = 5
+);
+
+rollback;
+
+select * from emp;
