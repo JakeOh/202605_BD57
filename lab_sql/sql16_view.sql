@@ -88,3 +88,109 @@ update v_avg_sal
 set AVG_SAL = 5000
 where deptno = 10;
 --> v_avg_sal은 업데이트할 수 없는 뷰.
+
+
+/*
+ * 테이블에 자동으로 증가되는 숫자를 저장할 수 있는 컬럼 만들기
+ * (이유) PK 컬럼에 값을 쉽게 삽입하기 위해서.
+ */
+create table ex_test1 (
+    id          number(6) generated always as identity
+                constraint pk_test1 primary key,
+    contents    varchar2(100 char)
+);
+
+insert into ex_test1 (contents) values ('점심 맛있게 드셨나요?');
+insert into ex_test1 (contents) values ('점심 먹고 나니 졸리네요...');
+--> id 컬럼에는 1부터 1씩 증가되는 정수들이 자동으로 삽입됨.
+
+select * from ex_test1;
+
+
+/*
+ * FK가 참조하는 PK의 값을 변경하는 방법.
+ */
+create table departments (
+    id      number(6) primary key,
+    name    varchar2(100 char)
+);
+
+insert into departments values (100, '컴퓨터공학과');
+insert into departments values (200, '국어국문학과');
+commit;
+
+select * from departments;
+
+create table students (
+    id      number(6) primary key,
+    name    varchar2(100 char) not null,
+    department_id   number(6) references departments (id)
+);
+
+insert into students values (1234, '오쌤', 100);
+insert into students values (1235, '홍길동', 200);
+commit;
+
+delete from students where id = 1235;
+commit;
+
+
+select * from students;
+
+-- 국어국문학과의 id를 200에서 201로 업데이트.
+-- 국어국문학과의 id는 아직 자식 테이블 students에서 참조되지 않는 상태.
+update departments
+set id = 201
+where id = 200;
+--> 성공
+
+-- 컴퓨터공학과의 id를 100에서 101으로 변경하는 방법.
+-- 컴퓨터공학과의 id는 자식 테이블 students에서 참조되고 있는 상태.
+update departments
+set id = 101
+where id = 100;
+--> 자식 레코드가 있기 때문에 실패
+
+-- 해결 방법 (1)
+-- 1. departments 테이블에 id=101, name=컴퓨터공학과인 레코드를 삽입.
+-- 2. students 테이블에서 department_id=100인 레코드들을 department_id=101로 업데이트.
+-- 3. departments 테이블에서 id=100(컴퓨터공학과)인 레코드는 삭제.
+
+-- 해결 방법 (2): 제약조건을 임시로 비활성화(disable)시켰다가 다시 활성화(enable)시키는 방법.
+-- 1. 자식 테이블의 FK 제약조건을 비활성화
+alter table students disable constraint SYS_C008413;
+-- 2. 부모 테이블의 PK를 변경
+update departments
+set id = 101
+where id = 100;  --> 업데이트 성공
+-- 3. 자식 테이블에서 학과번호 100인 레코들을 모두 101로 변경
+update students
+set department_id = 101
+where department_id = 100;
+-- 4. 변경 내용 commit
+commit;
+-- 5. 자식 테이블의 FK 제약조건을 다시 활성화
+alter table students enable constraint SYS_C008413;
+
+
+-- 해결 방법 (3): 지연 제약조건(deferrable constraint)을 사용.
+-- 제약조건을 만들 때 deferrable로 선언이 되어 있어야 함.
+-- 기존에 non-deferrable(지연 가능하지 않은) 제약조건을 삭제:
+alter table students drop constraint SYS_C008413;
+-- 지연가능한(deferrable) FK 제약조건을 추가
+alter table students
+add constraint fk_studnets_dept_id 
+    foreign key (department_id) references departments (id)
+    deferrable initially immediate;
+-- 1. 제약조건을 commit 시점까지 지연시킴.(commit될 때까지는 제약조건을 검증하지 않음.)
+set constraint fk_studnets_dept_id deferred;
+-- 2. 부모 테이블(departments)에서 101번 학과를 110번으로 업데이트.
+update departments
+set id = 110
+where id = 101;
+-- 3. 자식 테이블(students)에서 101 학과번호를 110으로 업데이트.
+update students
+set department_id = 110
+where department_id = 101;
+-- 4. 변경 내용을 commit -> 지연됐던 FK 제약조건을 검증함.
+commit;
