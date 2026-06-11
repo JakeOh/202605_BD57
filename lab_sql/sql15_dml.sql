@@ -61,10 +61,58 @@ set sal = sal * 1.1
 where job = 'CLERK';
 
 -- Ex 3. ACCOUNTING 부서에서 일하는 직원들의 급여를 10% 인상.
+update emp
+set sal = sal * 1.1
+where deptno = (
+    select deptno from dept where dname = 'ACCOUNTING'
+);
+
 -- Ex 4. 급여 등급이 1인 직원들의 급여를 20% 인상.
+-- 급여 등급이 1인 직원들 검색
+select * from emp
+where sal between (select losal from salgrade where grade = 1) 
+    and (select hisal from salgrade where grade = 1);
+
+-- 급여 20% 인상
+update emp
+set sal = sal * 1.2
+where sal between (select losal from salgrade where grade = 1) 
+    and (select hisal from salgrade where grade = 1);
+
+-- 급여 등급이 2인 직원들(JOIN 사용)
+select e.*, s.*
+from emp e 
+    join salgrade s on e.sal between s.losal and s.hisal
+where s.grade = 2;
+
+-- 급여 등급이 2인 직원들의 급여를 5% 인상
+update emp
+set sal = sal * 1.05
+where empno in (
+    select e.empno
+    from emp e 
+        join salgrade s on e.sal between s.losal and s.hisal
+    where s.grade = 2
+);
+
+
 -- Ex 5. emp 테이블에서 부서번호가 dept 테이블에 없는 직원의 부서번호를 null로 업데이트.
+update emp
+set deptno = null
+where deptno not in (
+    select deptno from dept
+);
+
+-- 입사날짜가 null인 직원(들)의 입사일을 현재시간으로 업데이트.
+update emp
+set hiredate = sysdate
+where hiredate is null;
+
+-- comm이 null인 직원들의 comm을 0으로 업데이트.
+update emp
+set comm = 0
+where comm is null;
 
 commit;
 
 select * from emp;
-
