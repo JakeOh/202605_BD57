@@ -162,3 +162,85 @@ where (year, gdp_percap) in (
     group by year
 )
 order by year;
+
+-- rank() 함수를 이용한 그룹별 최댓값 찾기
+select
+    g.*,
+    rank() over (partition by year order by gdp_percap desc) as "RANKING"
+from gapminder g;
+
+with t as (
+    select
+        g.*,
+        rank() over (partition by year order by gdp_percap desc) as "RANKING"
+    from gapminder g
+)
+select t.*
+from t
+where t.RANKING <= 6;  /* where t.RANKING = 1 */
+
+
+-- 대륙별 1인당 GDP 최댓값 레코드
+select
+    continent, max(gdp_percap)
+from gapminder
+group by continent
+;
+
+select *
+from gapminder
+where (continent, gdp_percap) in (
+    select continent, max(gdp_percap)
+    from gapminder
+    group by continent
+);
+
+with t as (
+    select
+        g.*,
+        rank() over (partition by continent order by gdp_percap desc) as "RANKING"
+    from gapminder g
+)
+select t.*
+from t
+where t.RANKING <= 6;
+
+
+-- 연도별, 대륙별 인구수
+select
+    year, continent, sum(pop) as "TOTAL_POP"
+from gapminder
+group by year, continent
+order by year, continent;
+
+select
+    year, continent, sum(pop) as "TOTAL_POP"
+from gapminder
+group by year, continent
+order by continent, year;
+
+-- 연도별, 대륙별 인구수가 가장 많은 연도, 대륙, 그때의 인구수.
+select
+    year, continent, sum(pop) as "TOTAL_POP"
+from gapminder
+group by year, continent
+order by TOTAL_POP desc;
+
+select
+    year, continent, sum(pop) as "TOTAL_POP"
+from gapminder
+group by year, continent
+order by TOTAL_POP desc
+offset 0 rows
+fetch next 1 rows only;
+
+with t as (
+    select year, continent, sum(pop) as "TOTAL_POP"
+    from gapminder
+    group by year, continent
+)
+select t.*
+from t
+where t.TOTAL_POP = (
+    select max(t.TOTAL_POP) from t
+);
