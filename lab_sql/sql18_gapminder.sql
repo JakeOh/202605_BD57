@@ -244,3 +244,86 @@ from t
 where t.TOTAL_POP = (
     select max(t.TOTAL_POP) from t
 );
+
+
+-- 연도별, 대륙별 기대 수명의 평균
+select
+    year, continent, round(avg(life_exp), 2) as "AVG_LIFE_EXP"
+from gapminder
+group by year, continent
+order by year, continent;
+
+select
+    year, continent, round(avg(life_exp), 2) as "AVG_LIFE_EXP"
+from gapminder
+group by year, continent
+order by continent, year;
+
+select
+    year, continent, round(avg(life_exp), 2) as "AVG_LIFE_EXP"
+from gapminder
+group by year, continent
+order by AVG_LIFE_EXP desc;
+
+select
+    year, continent, round(avg(life_exp), 2) as "AVG_LIFE_EXP"
+from gapminder
+group by year, continent
+order by AVG_LIFE_EXP desc
+offset 0 rows
+fetch next 1 rows only;
+
+with t as (
+    select year, continent, avg(life_exp) as "AVG_LIFE_EXP"
+    from gapminder
+    group by year, continent
+)
+select t.*
+from t
+where t.AVG_LIFE_EXP = (
+    select max(t.AVG_LIFE_EXP) from t
+);
+
+-- 연도별, 대륙별 1인당 GDP의 평균
+select
+    year, continent, round(avg(gdp_percap), 2) as "AVG_GDP_PERCAP"
+from gapminder
+group by year, continent
+order by year, continent;
+
+select
+    year, continent, round(avg(gdp_percap), 2) as "AVG_GDP_PERCAP"
+from gapminder
+group by year, continent
+order by continent, year;
+
+select
+    year, continent, round(avg(gdp_percap), 2) as "AVG_GDP_PERCAP"
+from gapminder
+group by year, continent
+order by AVG_GDP_PERCAP desc;
+
+
+-- pivot() 함수
+with t as (
+    select year, continent, pop from gapminder
+)
+select * from t
+pivot(
+    sum(pop) for continent in ('Africa' as "AFRICA",
+                                'Americas' as "AMERICAS",
+                                'Asia' as "ASIA",
+                                'Europe' as "EUROPE",
+                                'Oceania' as "OCEANIA")
+)
+order by year;
+
+with t as (
+    select year, continent, pop from gapminder
+)
+select * from t
+pivot(
+    sum(pop) for year in (1952, 1957, 1962, 1967, 1972, 1977, 
+                          1982, 1987, 1992, 1997, 2002, 2007)
+)
+order by continent;
