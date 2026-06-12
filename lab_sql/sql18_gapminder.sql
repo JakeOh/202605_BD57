@@ -327,3 +327,47 @@ pivot(
                           1982, 1987, 1992, 1997, 2002, 2007)
 )
 order by continent;
+
+
+-- pivot() 함수를 사용한 연도별 대륙별 기대수명의 평균
+with t as (
+    select year, continent, life_exp from gapminder
+)
+select
+    year, 
+    round("AF", 2) as africa,
+    round("AM", 2) as americas,
+    round("AS", 2) as asia,
+    round("EU", 2) as europe,
+    round("OC", 2) as oceania
+from t
+pivot(
+    avg(life_exp) for continent in ('Africa' as "AF",
+                                    'Americas' as "AM",
+                                    'Asia' as "AS",
+                                    'Europe' as "EU",
+                                    'Oceania' as "OC")
+)
+order by year;
+
+
+-- pivot() 함수를 사용한 연도별, 대륙별 1인당 GDP 평균
+with t as (
+    select year, continent, gdp_percap from gapminder
+)
+select
+    year, 
+    round("AF", 2) as africa,
+    round("AM", 2) as americas,
+    round("AS", 2) as asia,
+    round("EU", 2) as europe,
+    round("OC", 2) as oceania
+from t
+pivot(
+    avg(gdp_percap) for continent in ('Africa' as "AF",
+                                    'Americas' as "AM",
+                                    'Asia' as "AS",
+                                    'Europe' as "EU",
+                                    'Oceania' as "OC")
+)
+order by year;
