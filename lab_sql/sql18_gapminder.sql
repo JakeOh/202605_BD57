@@ -6,7 +6,7 @@
  *
  * 1. 테이블에는 모두 몇 개의 나라가 있을까요?
  * 2. 테이블에는 모두 몇 개의 대륙이 있을까요?
- * 3. 테이블에는 저장된 데이터는 몇년도부터 몇년도까지 조사한 내용일까요?
+ * 3. 테이블에는 저장된 데이터는 몇 년도부터 몇 년도까지 조사한 내용일까요?
  * 4. 기대 수명이 최댓값인 레코드(row)를 찾으세요.
  * 5. 인구가 최댓값인 레코드(row)를 찾으세요.
  * 6. 1인당 GDP가 최댓값인 레코드(row)를 찾으세요.
@@ -23,3 +23,142 @@
  * 14. 11번 문제의 결과에서 대륙이름이 컬럼이 되도록 출력하세요.
  * 15. 12번 문제의 결과에서 대륙이름이 컬럼이 되도록 출력하세요.
  */
+
+
+create table gapminder (
+    country     varchar2(100 char),
+    continent   varchar2(100 char),
+    year        number(4),
+    life_exp    number,
+    pop         number,
+    gdp_percap  number
+);
+
+-- 테이블의 전체 행 개수
+select count(*) from gapminder;  --> 1704
+
+-- 각각의 컬럼에 null이 있는 지 여부?
+select
+    count(country), count(continent), count(year),
+    count(life_exp), count(pop), count(gdp_percap)
+from gapminder;
+--> null이 있는 컬럼은 없음.
+
+-- 첫 20개 행만 출력
+select * from gapminder
+order by country, year
+offset 0 rows
+fetch next 20 rows only;
+
+-- 연속형 변수 vs 범주(카테고리)형 변수
+-- 연속형 변수 - 숫자(정수 또는 실수). (예) 연도, 기대수명, 인구수, 1인당 GDP, ...
+-- 연속형 변수의 통계량 - 최댓값, 최솟값, 합계, 평균, 분산, 표준편차, 중앙값(중위값), ...
+-- 범주형 변수 - 문자열, 정수. (예) 국가이름, 대륙이름, 연도, ...
+-- 범주형 변수의 통계량 - 개수(빈도수)
+
+-- 국가 개수
+select distinct country from gapminder order by country;
+select count(distinct country) from gapminder;  --> 142
+
+-- 연도 개수
+select distinct year from gapminder order by year;
+select count(distinct year) from gapminder;  --> 12
+
+select 142 * 12 from dual;  --> 국가 개수 x 연도 개수 = 행 개수
+
+select country, count(*)
+from gapminder
+group by country
+order by country;
+
+select year, count(*)
+from gapminder
+group by year
+order by year;
+
+-- 대륙 이름, 개수
+select distinct continent from gapminder order by continent;
+select count(distinct continent) from gapminder;
+
+select continent, count(*)
+from gapminder
+group by continent
+order by continent;
+
+-- 연속형 변수 기술 통계량(descriptive statistics)
+-- 기대수명(lief_exp) 기술 통계량
+select
+    round(avg(life_exp), 2) as "평균",
+    round(variance(life_exp), 2) as "분산",
+    round(stddev(life_exp), 2) as "표준편차",
+    max(life_exp) as "최댓값",
+    min(life_exp) as "최솟값",
+    median(life_exp) as "중앙값"
+from gapminder;
+
+
+-- 인구 기술 통계량
+select
+    round(avg(pop), 2) as "평균",
+    round(variance(pop), 2) as "분산",
+    round(stddev(pop), 2) as "표준편차",
+    max(pop) as "최댓값",
+    min(pop) as "최솟값",
+    median(pop) as "중앙값"
+from gapminder;
+
+-- 1인당 GDP 기술 통계량
+select
+    round(avg(gdp_percap), 2) as "평균",
+    round(variance(gdp_percap), 2) as "분산",
+    round(stddev(gdp_percap), 2) as "표준편차",
+    max(gdp_percap) as "최댓값",
+    min(gdp_percap) as "최솟값",
+    median(gdp_percap) as "중앙값"
+from gapminder;
+
+
+-- 기대수명이 최댓값인 레코드 --> 고령화된 사회(국가)
+select * from gapminder
+where life_exp = (
+    select max(life_exp) from gapminder
+);
+
+
+-- 인구가 최댓값인 레코드(row)
+select * from gapminder
+where pop = (
+    select max(pop) from gapminder
+);
+
+
+-- 1인당 GDP가 최댓값인 레코드
+select * from gapminder
+where gdp_percap = (
+    select max(gdp_percap) from gapminder
+);
+
+
+-- 우리나라 통계 자료
+select * from gapminder
+where lower(country) like '%kor%';
+
+select * from gapminder
+where country = 'Korea, Rep.'
+order by year;
+
+
+-- 연도별 1인당 GDP의 최댓값인 레코드
+select year, max(gdp_percap)
+from gapminder
+group by year
+order by year;
+
+-- 다중 행, 다중 컬럼 서브쿼리
+select * from gapminder
+where (year, gdp_percap) in (
+    select year, max(gdp_percap)
+    from gapminder
+    group by year
+)
+order by year;
