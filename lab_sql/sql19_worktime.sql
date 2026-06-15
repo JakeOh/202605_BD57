@@ -108,7 +108,7 @@ select * from t
 where t.ranking <= 5;
 
 
--- 각각의 연도에서 연평균 근로시간이 가장 긴 나라
+-- 5. 각각의 연도에서 연평균 근로시간이 가장 긴 나라
 -- 2014년에서 연평균 근로시간이 가장 긴 나라
 select * from worktimes
 where y2014 = (select max(y2014) from worktimes);
@@ -128,7 +128,67 @@ where y2018 = (select max(y2018) from worktimes);
 
 -- 4. 가장 긴 근로시간은 몇 년도의 어느 나라일까?
 -- unpivot(): 컬럼의 내용들을 행으로 바꿈. 가로로 긴 데이터 --> 세로로 긴 데이터.
--- unpivot(컬럼으로_사용할_이름 for 변수 in (column1, column2, ...))
+-- unpivot(데이터_컬럼이름 for 열이름_컬럼이름 in (column1, column2, ...))
 select * from worktimes
 unpivot(avg_work_time for year in (y2014, y2015, y2016, y2017, y2018));
 
+-- unpivot 내용을 뷰로 저장
+create view v_worktimes_long 
+as
+select * from worktimes
+unpivot(avg_work_time for year in (y2014, y2015, y2016, y2017, y2018));
+
+-- 모든 연도를 통틀어서 가장 긴 근로시간
+select * from v_worktimes_long
+where avg_work_time = (
+    select max(avg_work_time) from v_worktimes_long
+);
+
+
+-- 5. 각각의 연도에서 연평균 근로 시간이 가장 긴 나라 - view를 이용
+select
+    year, max(avg_work_time)
+from v_worktimes_long
+group by year;
+
+-- 다중 행, 다중 열(컬럼) 서브 쿼리
+select * from v_worktimes_long
+where (year, avg_work_time) in (
+    select year, max(avg_work_time)
+    from v_worktimes_long
+    group by year
+);
+
+-- 각각의 연도에서 연평균 근로 시간이 가장 짧은 나라
+select * from v_worktimes_long
+where (year, avg_work_time) in (
+    select year, min(avg_work_time)
+    from v_worktimes_long
+    group by year
+);
+
+-- 2018년 한국 연평균 근로시간보다 긴 나라들
+select * from v_worktimes_long
+where avg_work_time > (
+    select avg_work_time from v_worktimes_long
+    where country = '한국' and year = 'Y2018'
+);
+
+
+-- 연도별 연평균 근로시간 내림차순(근로시간 긴 나라) 순위 1 ~ 5위를 출력.
+with t as (
+    select
+        vw.*,
+        rank() over (partition by year order by avg_work_time desc) as ranking
+    from v_worktimes_long vw
+)
+select * from t where t.ranking <= 5;
+
+-- 연도별 연평균 근로시간 오름차순(근로시간 짧은 나라) 순위 1 ~ 5위를 출력.
+with t as (
+    select
+        vw.*,
+        rank() over (partition by year order by avg_work_time) as ranking
+    from v_worktimes_long vw
+)
+select * from t where t.ranking <= 5;
