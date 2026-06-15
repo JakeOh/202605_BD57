@@ -11,3 +11,6 @@
 * lab_sql
   * [Oracle Database 21c Express Edition 다운로드](https://www.oracle.com/kr/database/technologies/xe-downloads.html)
   * [SQL Developer 다운로드](https://www.oracle.com/database/sqldeveloper/technologies/download/)
+
+* lab_python
+  * Python 프로그래밍 언어
