@@ -14,3 +14,8 @@
 
 * lab_python
   * Python 프로그래밍 언어
+
+* [202605_BD57_PyCharmProj](https://github.com/JakeOh/202605_BD57_PyCharmProj)
+  * PyCharm IDE 파이썬 프로젝트
+  * [Python 3.12 다운로드](https://www.python.org/downloads/release/python-31210/)
+  * [PyCharm 다운로드](https://www.jetbrains.com/ko-kr/pycharm/download/)
