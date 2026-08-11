@@ -24,3 +24,5 @@
   * PyCharm IDE 파이썬 프로젝트
   * [Python 3.12 다운로드](https://www.python.org/downloads/release/python-31210/)
   * [PyCharm 다운로드](https://www.jetbrains.com/ko-kr/pycharm/download/)
+
+* [Big Data 53기 중간 프로젝트 발표자료](https://drive.google.com/drive/folders/1WtNm6XaBaMeNPIA3d7zrddRodG3Lx4SK?usp=sharing)
