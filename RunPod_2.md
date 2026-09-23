@@ -1,3 +1,7 @@
+# Runpod & Conda 가상환경(virtual environment) 설정
+
+---
+
 ## 1. 권장 구성
 
 | 환경 | 필수 라이브러리 | GPU 사용 |
