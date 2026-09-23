@@ -1,3 +1,7 @@
+# Runpod & Python 가상환경(virtual environment) 설정
+
+---
+
 > PyTorch와 TensorFlow 두 프레임워크는 요구하는 CUDA/cuDNN 버전이 달라 한 Python 환경에 GPU 버전을 함께 설치하면 충돌할 수 있습니다. 따라서 아래처럼 구성하는 것을 추천합니다.
 >
 > - **PyTorch용 환경**: 모든 필수 라이브러리 사용 가능. PyTorch는 GPU, TensorFlow는 CPU 사용.
