@@ -26,3 +26,8 @@
   * [PyCharm 다운로드](https://www.jetbrains.com/ko-kr/pycharm/download/)
 
 * [Big Data 53기 중간 프로젝트 발표자료](https://drive.google.com/drive/folders/1WtNm6XaBaMeNPIA3d7zrddRodG3Lx4SK?usp=sharing)
+
+* Runpod 개발 환경 설정
+  * [Python Virtual Environment](https://github.com/JakeOh/202605_BD57/blob/main/RunPod_1.md)
+  * [Conda Virtual Environment](https://github.com/JakeOh/202605_BD57/blob/main/RunPod_2.md)
+ 
