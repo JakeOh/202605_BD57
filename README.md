@@ -31,4 +31,4 @@
   * [Python Virtual Environment](https://github.com/JakeOh/202605_BD57/blob/main/RunPod_1.md)
   * [Conda Virtual Environment](https://github.com/JakeOh/202605_BD57/blob/main/RunPod_2.md)
  
-* [AI 에이전트](https://github.com/JakeOh/202605_BD57_AI_Agent)
+* [AI 에이전트 만들기](https://github.com/JakeOh/202605_BD57_AI_Agent)
