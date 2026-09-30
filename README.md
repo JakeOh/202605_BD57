@@ -32,3 +32,4 @@
   * [Conda Virtual Environment](https://github.com/JakeOh/202605_BD57/blob/main/RunPod_2.md)
  
 * [AI 에이전트 만들기](https://github.com/JakeOh/202605_BD57_AI_Agent)
+  * OpenAI API를 사용한 AI 에이전트 만들기
