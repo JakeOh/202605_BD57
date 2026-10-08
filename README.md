@@ -33,3 +33,7 @@
  
 * [AI 에이전트 만들기](https://github.com/JakeOh/202605_BD57_AI_Agent)
   * OpenAI API를 사용한 AI 에이전트 만들기
+
+* lab_tableau
+  * Tableau Desktop
+  * 데이터 시각화
